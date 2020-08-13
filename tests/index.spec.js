@@ -3,7 +3,6 @@
 const { firefox } = require('playwright');
 const assert = require('assert');
 const userMock = require('../mocks/user.json');
-const config = require('../config.json');
 const { login, getFrame, getLabelByName, getButtonByName } = require('../utils');
 
 describe('Playwright', function () {
@@ -26,7 +25,7 @@ describe('Playwright', function () {
       })
     });
     // navigate to powerapp in embed mode, removing office 365 banner
-    await page.goto(`https://apps.powerapps.com/play/${config.appId}?source=iframe&hidenavbar=true`);
+    await page.goto(`https://apps.powerapps.com/play/${process.env.APP_ID}?source=iframe&hidenavbar=true`);
     // perform azure ad login 
     await login(page);
     // wait for redirection back to power app
