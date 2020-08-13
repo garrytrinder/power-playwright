@@ -1,0 +1,22 @@
+{
+  "Id": "a86f34fb-fc0b-476f-b2d3-84b2648cc87a",
+  "AccountEnabled": true,
+  "BusinessPhones": [
+    "4250000000"
+  ],
+  "City": null,
+  "CompanyName": null,
+  "Country": null,
+  "Department": null,
+  "DisplayName": "User User",
+  "GivenName": "User",
+  "JobTitle": null,
+  "Mail": "user@tenant.onmicrosoft.com",
+  "MailNickname": "user",
+  "mobilePhone": null,
+  "OfficeLocation": null,
+  "PostalCode": null,
+  "Surname": "User",
+  "TelephoneNumber": null,
+  "UserPrincipalName": "user@tenant.onmicrosoft.com"
+}
