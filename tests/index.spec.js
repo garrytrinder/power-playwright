@@ -3,33 +3,8 @@
 const { firefox } = require('playwright');
 const assert = require('assert');
 const userMock = require('../mocks/user.json');
-
-const login = async function (page) {
-  // complete username field
-  await page.fill('input[name=loginfmt]', process.env.TEST_ACCOUNT);
-  // click next button
-  await page.click('text=Next');
-  // wait for password field to appear in DOM
-  await page.waitForSelector('input[name=passwd]');
-  // complete password field
-  await page.fill('input[name=passwd]', process.env.TEST_ACCOUNT_PWD)
-  // click sign in button
-  await page.click('text=Sign in');
-  // check remember me box
-  await page.click('#KmsiCheckboxField');
-  // click yes button
-  await page.click('text=Yes');
-};
-
-const getFrame = async function (page) {
-  // wait for iframe container to appear in DOM
-  await page.waitForSelector('#fullscreen-app-host');
-  // initialise iframe
-  const frame = await page.frame('fullscreen-app-host');
-  // wait for iframe to complete loading power app
-  await frame.waitForLoadState();
-  return frame;
-};
+const config = require('../config.json');
+const { login, getFrame, getLabelByName, getButtonByName } = require('../utils');
 
 describe('Playwright', function () {
   let browser, page, frame;
@@ -51,7 +26,7 @@ describe('Playwright', function () {
       })
     });
     // navigate to powerapp in embed mode, removing office 365 banner
-    await page.goto('https://apps.powerapps.com/play/f581c872-9852-4100-8e25-3d6891595204?source=iframe&hidenavbar=true');
+    await page.goto(`https://apps.powerapps.com/play/${config.appId}?source=iframe&hidenavbar=true`);
     // perform azure ad login 
     await login(page);
     // wait for redirection back to power app
@@ -76,7 +51,7 @@ describe('Playwright', function () {
   });
 
   it('should login and load', async function () {
-    const counter = await frame.waitForSelector('div[data-control-name=lblCount]')
+    const counter = await getLabelByName('lblCount', frame);
     const count = await counter.innerText();
 
     // @ts-ignore
@@ -84,9 +59,9 @@ describe('Playwright', function () {
   });
 
   it('when add clicked, counter should increment', async function () {
-    const add = await frame.waitForSelector('div[data-control-name=btnAdd] div[data-bind]:not(:empty)');
-    await add.click();
-    const counter = await frame.waitForSelector('div[data-control-name=lblCount]');
+    const button = await getButtonByName('btnAdd', frame);
+    await button.click();
+    const counter = await getLabelByName('lblCount', frame);
     const count = await counter.innerText();
 
     // @ts-ignore
@@ -94,9 +69,9 @@ describe('Playwright', function () {
   });
 
   it('when subtract clicked, counter should decrement', async function () {
-    const subtract = await frame.waitForSelector('div[data-control-name=btnSubtract] div[data-bind]:not(:empty)');
+    const subtract = await getButtonByName('btnSubtract', frame);
     await subtract.click();
-    const counter = await frame.waitForSelector('div[data-control-name=lblCount]');
+    const counter = await getLabelByName('lblCount', frame);
     const count = await counter.innerText();
 
     // @ts-ignore
@@ -104,7 +79,7 @@ describe('Playwright', function () {
   });
 
   it('displays name of the current user', async function () {
-    const welcome = await frame.waitForSelector('div[data-control-name=lblWelcome]');
+    const welcome = await getLabelByName('lblWelcome', frame);
     const text = await welcome.innerText();
 
     // @ts-ignore
